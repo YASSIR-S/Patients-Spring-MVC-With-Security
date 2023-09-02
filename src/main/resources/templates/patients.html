@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.uz/thymeleaf/layout"
+      layout:decorate="template1"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Patient</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+</head>
+<body>
+<div layout:fragment="content1">
+    <div class="container mt-2">
+        <div class="card">
+            <div class="card-header"> Liste des Patients </div>
+            <div class="card-body">
+                <form method="get" th:action="@{index}">
+                    <label> Key Word</label>
+                    <input type="text" name="keyword" th:value="${keyword}">
+                    <button type="submit" class="btn btn-primary">Chercher</button>
+                </form>
+                <table class="table">
+                    <tr>
+                        <th>ID</th><th>Nom</th><th>Malade</th><th>Date</th><th>Score</th>
+                    </tr>
+                    <tr th:each="p:${listpatient}">
+                        <td th:text="${p.id}"></td>
+                        <td th:text="${p.nom}"></td>
+                        <td th:text="${p.malade}"></td>
+                        <td th:text="${p.dateNaissance}"></td>
+                        <td th:text="${p.score}"></td>
+                        <td> <a class="btn btn-danger " sec:authorize="hasRole('ADMIN')" th:href="@{delete(id=${p.id},keyword=${keyword},page=${currentpage})}">Supprimer</a> </td>
+                        <td><a class="btn btn-success" sec:authorize="hasRole('ADMIN')" th:href="@{editPatient(id=${p.id},keyword=${keyword},page=${currentpage})}">Modifier</a></td>
+                    </tr>
+
+                </table>
+                <ul class="nav nav-pills">
+                    <li th:each="page,status:${pages}">
+                        <a th:class="${status.index==currentpage -1?'btn btn-info m-lg-3':'btn btn-outline-info m-lg-3'}"
+                           th:text="${status.count}"
+                           th:href="@{index(page=${status.index+1},keyword=${keyword})}"
+
+                        ></a>
+
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
